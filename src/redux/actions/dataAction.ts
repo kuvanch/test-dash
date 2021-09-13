@@ -2,7 +2,7 @@ import { Dispatch } from "redux"
 import axios from 'axios'
 import { getData, getDataError, getDataSuccess } from "../reducer/dataReducer";
 
-const dataAction = (page:number = 1) => {
+const dataAction = (page:number = 1,size:number = 10) => {
     return async (dispatch: Dispatch) => {
         try {
             dispatch(getData())
@@ -14,7 +14,7 @@ const dataAction = (page:number = 1) => {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
                 data: JSON.stringify({
-                    "size": 10,
+                    "size": size,
                     "page": page,
                     "stock": {
                         "exist": true,

@@ -1,5 +1,5 @@
-import { Button, PageHeader, Divider, Row, Col, Table } from 'antd'
-import React, { useEffect } from 'react'
+import { Button, PageHeader, Divider, Row, Col, Table,Input, Space } from 'antd'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { useTypedSelector } from '../hooks/useTypedSelector';
 import dataAction from '../redux/actions/dataAction';
@@ -24,13 +24,21 @@ export const Home = () => {
         key: 'supplier',
     },
     ];
+    const [search,setSearch] = useState<string>('')
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(dataAction())
     }, [])
     const { data,total } = useTypedSelector(state => state.data)
-    const dataSource:any = []
-    data.map((item:any) =>  dataSource.push({...item,key: item.id}))
+    let dataSource:any = []
+    data.filter( (val:any) => {
+        if(search === '') {
+            return val
+        }
+        else if (val.name.toLowerCase().includes(search.toLowerCase())){
+            return val
+        }
+    }).map((item:any) =>  dataSource.push({...item,key: item.id}))
     const onChangePagination = (page:number) => {
         dispatch(dataAction(page))
     }
@@ -53,6 +61,13 @@ export const Home = () => {
             <Divider/>
             <Row>
                 <Col span={12} offset={6}>
+                        <Input value={search}
+                            onChange={(e:ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)} 
+                            placeholder="Search" />
+                </Col>
+                <Col span={12} offset={6}>
+                    
+                    
                     <Table pagination={{
                         total: total,
                         pageSize: 10,
